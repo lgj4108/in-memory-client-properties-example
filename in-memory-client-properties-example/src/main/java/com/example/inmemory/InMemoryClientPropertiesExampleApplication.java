@@ -3,13 +3,20 @@ package com.example.inmemory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.OAuth2AuthorizationServerConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 /**
  * Spring Boot properties의 클라이언트 ID 와 Secret으로 토큰 발급하기
  * @param args
  */
+@EnableWebSecurity
 @EnableAuthorizationServer
 @SpringBootApplication
 public class InMemoryClientPropertiesExampleApplication {
@@ -32,5 +39,18 @@ public class InMemoryClientPropertiesExampleApplication {
 	}
 
 	
+	/**
+	 * Custom ObjectMapper
+	 * object parsing naming rule 적용
+	 * 이전엔  CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES을 사용 했지만 현재는 SNAKE_CASE로 사용(camel case)
+	 * @see ObjectMapper, PropertyNamingStrategy
+	 */
+	@Bean
+	public ObjectMapper objectMapper() {
+		ObjectMapper customObjectMapper = new ObjectMapper();
+		customObjectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+		
+		return customObjectMapper;
+	}
 	
 }
